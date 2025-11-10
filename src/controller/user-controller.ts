@@ -3,13 +3,7 @@ import prisma from "../../lib/prisma";
 import jsonWebToken from "../../lib/json-web-token";
 import userService from "../service/user-service";
 import type { Request, Response, NextFunction } from "express";
-
-interface User {
-  id: number;
-  password: string;
-  image: string;
-  email: string;
-}
+import { User } from "@prisma/client";
 
 interface userRequest extends Request {
   user?: any;

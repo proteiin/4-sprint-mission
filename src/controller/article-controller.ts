@@ -2,14 +2,9 @@ import express from "express";
 import prisma from "../../lib/prisma";
 import ArticleService from "../service/article-service";
 import type { Request, Response, NextFunction } from "express";
+import { User } from "@prisma/client";
 
 //모든 게시글 불러오기, 댓글 미포함
-interface User {
-  id: number;
-  password: string;
-  image: string;
-  email: string;
-}
 
 interface articleRequest extends Request {
   user?: any;
