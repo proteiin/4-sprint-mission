@@ -1,9 +1,10 @@
-import prisma from "../lib/prisma.js";
+import { Prisma } from "@prisma/client";
+import prisma from "../../lib/prisma.js";
 
 export class productService {
-  getProducts = async (data) => {
+  getProducts = async (data: any) => {
     let { sort, skip, take, searchName, searchDescription } = data;
-    let orderBy;
+    let orderBy: Prisma.ProductOrderByWithRelationInput;
 
     skip = Number(skip);
     take = Number(skip);
@@ -25,14 +26,14 @@ export class productService {
           searchDescription
             ? { content: { contains: searchDescription } }
             : undefined,
-        ].filter(Boolean),
+        ].filter(Boolean) as Prisma.ProductWhereInput,
       },
       orderBy,
     });
     return product;
   };
 
-  addIsLiked = async (user, product) => {
+  addIsLiked = async (user: any, product: any) => {
     const productLikeList = user.productLike;
     const likedProductIds = [];
     for (const productLike of productLikeList) {

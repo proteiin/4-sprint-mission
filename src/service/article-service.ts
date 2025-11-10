@@ -1,3 +1,4 @@
+import { Article, Prisma, User } from "@prisma/client";
 import prisma from "../../lib/prisma.js";
 
 interface getArticleParams {
@@ -22,7 +23,7 @@ export class ArticleService {
     searchtitle,
     searchcontent,
   }: getArticleParams) => {
-    let orderBy;
+    let orderBy: Prisma.ArticleOrderByWithRelationInput;
     skip = Number(skip);
     take = Number(take);
 
@@ -62,7 +63,7 @@ export class ArticleService {
     return articleComment;
   };
 
-  addIsLiked = async (user, article) => {
+  addIsLiked = async (user: any, article: any) => {
     const articleLikeList = user.articleLike;
     const likedArticleIds = [];
     if (!articleLikeList) {
@@ -70,7 +71,7 @@ export class ArticleService {
     } else {
       for (const articleLike of articleLikeList) {
         let articleId = articleLike.articleId;
-        likedArticles.push(article);
+        likedArticleIds.push(article);
       }
 
       const articleId = Number(article.id);

@@ -2,8 +2,20 @@ import bcrypt from "bcrypt";
 import prisma from "../../lib/prisma.js";
 import jsonWebToken from "../../lib/json-web-token.js";
 
+interface CreateUserDto {
+  password: string;
+  email: string;
+  nickname: string;
+  image: string;
+}
+
+interface loginDto {
+  email: string;
+  password: string;
+}
+
 class userService {
-  createUser = async ({ password, email, nickname, image }) => {
+  createUser = async ({ password, email, nickname, image }: CreateUserDto) => {
     try {
       const salt = await bcrypt.genSalt(10);
       password = String(password);
@@ -19,11 +31,11 @@ class userService {
       return newUser;
     } catch (error) {
       console.error(error);
-      throw new Error(error.message);
+      throw new Error("데이터베이스 에러가 발생했습니다");
     }
   };
 
-  loginAndGiveToken = async ({ email, password }) => {
+  loginAndGiveToken = async ({ email, password }: loginDto) => {
     const user = await prisma.user.findUnique({
       where: { email },
     });
@@ -49,12 +61,12 @@ class userService {
             like 모델들의 모임
      output: 유저가 좋아요 한 product들을 list 형식으로 가져옵니다. 
      */
-  likedProduct = async (likeModels) => {
+  likedProduct = async (likeModels: any) => {
     let likedProducList = [];
     for (const likedModel of likeModels) {
       const productId = likedModel.productId;
-      const Product = await prisma.product.findFirst({
-        id: productId,
+      const product = await prisma.product.findFirst({
+        where: { id: productId },
       });
       likedProducList.push(product);
     }
@@ -62,8 +74,8 @@ class userService {
     return likedProducList;
   };
 
-  formatUser = async (user) => {
-    let formattedUser = {};
+  formatUser = async (user: any) => {
+    let formattedUser: any = {};
     formattedUser.email = user.email;
     formattedUser.nickname = user.nickname;
     formattedUser.image = user.image;

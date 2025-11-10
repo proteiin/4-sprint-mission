@@ -62,7 +62,9 @@ export class ArticleController {
 
     const user = req.user;
     console.log(user);
-
+    if (!user) {
+      throw new Error("로그인이 필요합니다");
+    }
     try {
       let articles = await ArticleService.getArticles(data);
       for (let article of articles) {
@@ -78,21 +80,29 @@ export class ArticleController {
   };
 
   getOneArticle = async (
-    req: Request<{ id: string }>,
+    req: Request<{ id: string }, { user: User }>,
     res: Response,
     next: NextFunction
   ) => {
     try {
       let id = req.params.id;
       const idNum = Number(id);
-      const user = req.user;
-      console.log(user);
+      const user: any = req.user;
+      if (!user) {
+        throw new Error("로그인이 필요합니다");
+      }
+      const userId = user.id;
+      const newUser = await prisma.user.findUnique({
+        where: { id: userId },
+        include: { articleLike: true },
+      });
+
       let article = await prisma.article.findUnique({
         where: { id: idNum },
         include: { comment: true },
       });
 
-      article = await ArticleService.addIsLiked(user, article);
+      article = await ArticleService.addIsLiked(newUser, article);
 
       return res.status(200).send(article);
     } catch (error) {
