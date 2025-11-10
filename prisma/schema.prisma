@@ -58,13 +58,13 @@ model Article {
 }
 
 model Alarm {
-  id        Int      @id
+  id        Int      @id @default(autoincrement())
   message   String
   readed    Boolean  @default(false)
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
-  createdAt DateTime
-  updatedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ProductComment {
